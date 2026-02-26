@@ -50,19 +50,19 @@ class AddTranslationAction : AnAction() {
 				// 1. Edit translationKey.ts (Format: | "Label")
 				// Assumes file ends with a semicolon or bracket.
 				// We insert before the closing delimiter.
-				val labelContent = "  | \"${data.label}\""
-				appendToFile(keysPath, labelContent)
+				val labelContent = "	| \"${data.label}\""
+				insertEntrySpace(File(keysPath), labelContent)
 
 				// 2. Edit en.ts
-				val enContent = "    \"${data.label}\": \"${data.en}\","
+				val enContent = "		\"${data.label}\": \"${data.en}\","
 				insertEntry(File(enPath), enContent)
 
 				// 3. Edit de.ts
-				val deContent = "    \"${data.label}\": \"${data.de}\","
+				val deContent = "		\"${data.label}\": \"${data.de}\","
 				insertEntry(File(dePath), deContent)
 
 				// 4. Edit de_sie.ts
-				val deSieContent = "    \"${data.label}\": \"${data.deSie}\","
+				val deSieContent = "		\"${data.label}\": \"${data.deSie}\","
 				insertEntry(File(deSiePath), deSieContent)
 
 			} catch (ex: Exception) {
@@ -72,15 +72,20 @@ class AddTranslationAction : AnAction() {
 	}
 
 
-	private fun appendToFile(filePath: String, content: String) {
-		val file = java.io.File(filePath)
-		if (file.exists()) {
-			file.appendText("\n$content")
-		} else {
-			// Optional: Create parent directories if needed
-			file.parentFile.mkdirs()
-			file.writeText(content)
-		}
+	/**
+	 * Inserts content before the last closing brace } or semicolon ;.
+	 * Handles the comma logic for the previous line if necessary.
+	 */
+	private fun insertEntrySpace(file: File, content: String) {
+		val lines = file.readLines().toMutableList()
+
+		// Find the last line containing a closing brace or semicolon
+		var insertIndex = lines.size
+
+		// Insert the new content before the closing bracket
+		lines.add(insertIndex, content + "\n")
+
+		file.writeText(lines.joinToString("\n"))
 	}
 
 	/**
@@ -118,7 +123,7 @@ class AddTranslationAction : AnAction() {
 			// Since this implementation adds a comma to 'content', the syntax is valid regardless.
 		}
 
-		file.writeText(lines.joinToString("\n"))
+		file.writeText(lines.joinToString("\n") + "\n")
 	}
 }
 
