@@ -12,4 +12,13 @@
         <toolWindow factoryClass="com.github.dastuta.customextensions.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
         <postStartupActivity implementation="com.github.dastuta.customextensions.startup.MyProjectActivity" />
     </extensions>
+    <actions>
+        <action id="AddTranslationAction"
+                class="com.your.package.actions.AddTranslationAction"
+                text="Add Translation"
+                description="Save selected text as translation key">
+            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
+            <keyboard-shortcut first-keystroke="control shift T" keymap="$default"/>
+        </action>
+    </actions>
 </idea-plugin>
