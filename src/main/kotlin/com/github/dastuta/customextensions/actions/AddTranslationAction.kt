@@ -41,27 +41,20 @@ class AddTranslationAction : AnAction() {
 			try {
 				val basePath = project.basePath ?: return@runWriteCommandAction
 
-				// Define paths
 				val keysPath = "$basePath/src/common/misc/TranslationKey.ts"
 				val enPath = "$basePath/src/mail-app/translations/en.ts"
 				val dePath = "$basePath/src/mail-app/translations/de.ts"
 				val deSiePath = "$basePath/src/mail-app/translations/de_sie.ts"
 
-				// 1. Edit translationKey.ts (Format: | "Label")
-				// Assumes file ends with a semicolon or bracket.
-				// We insert before the closing delimiter.
 				val labelContent = "	| \"${data.label}\""
 				insertEntrySpace(File(keysPath), labelContent)
 
-				// 2. Edit en.ts
 				val enContent = "		\"${data.label}\": \"${data.en}\","
 				insertEntry(File(enPath), enContent)
 
-				// 3. Edit de.ts
 				val deContent = "		\"${data.label}\": \"${data.de}\","
 				insertEntry(File(dePath), deContent)
 
-				// 4. Edit de_sie.ts
 				val deSieContent = "		\"${data.label}\": \"${data.deSie}\","
 				insertEntry(File(deSiePath), deSieContent)
 
@@ -73,56 +66,42 @@ class AddTranslationAction : AnAction() {
 
 
 	/**
-	 * Inserts content before the last closing brace } or semicolon ;.
-	 * Handles the comma logic for the previous line if necessary.
+	 * Insert key entry at last line and add one empty line as last
 	 */
 	private fun insertEntrySpace(file: File, content: String) {
 		val lines = file.readLines().toMutableList()
 
-		// Find the last line containing a closing brace or semicolon
 		var insertIndex = lines.size
 
-		// Insert the new content before the closing bracket
 		lines.add(insertIndex, content + "\n")
 
 		file.writeText(lines.joinToString("\n"))
 	}
 
 	/**
-	 * Inserts content before the last closing brace } or semicolon ;.
-	 * Handles the comma logic for the previous line if necessary.
+	 * Inserts content before the first closing brace } as it's where the last possible translation can be added.
 	 */
 	private fun insertEntry(file: File, content: String) {
 		if (!file.exists()) {
-			file.parentFile?.mkdirs()
-			file.writeText(content)
 			return
 		}
 
 		val lines = file.readLines().toMutableList()
-
-		// Find the last line containing a closing brace or semicolon
 		var insertIndex = -1
 
 		for (i in lines.size - 1 downTo 0) {
 			val trimmed = lines[i].trim()
-			// Check for object closing } or type/list ending ;
 			if (trimmed.endsWith("}")) {
-				insertIndex = i // possibly -1
+				insertIndex = i
 				break
 			}
 		}
 
 		if (insertIndex != -1) {
-			// Insert the new content before the closing bracket
 			lines.add(insertIndex - 1, content)
-
-			// (Optional) Check the line *before* our insertion (which is currently at insertIndex - 1)
-			// If it is a key-value line missing a comma, we can add one to be safe,
-			// though TS usually allows trailing commas.
-			// Since this implementation adds a comma to 'content', the syntax is valid regardless.
 		}
 
+		// Add one extra newline
 		file.writeText(lines.joinToString("\n") + "\n")
 	}
 }
