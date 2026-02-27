@@ -13,7 +13,7 @@
                 text="Add Translation"
                 description="Save selected text as translation key">
             <add-to-group group-id="EditorPopupMenu" anchor="first"/>
-            <keyboard-shortcut first-keystroke="control shift T" keymap="$default"/>
+            <keyboard-shortcut first-keystroke="alt T" keymap="$default"/>
         </action>
     </actions>
 </idea-plugin>

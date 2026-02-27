@@ -98,6 +98,10 @@ class AddTranslationAction : AnAction() {
 		}
 
 		if (insertIndex != -1) {
+			val lastEntryIndex = insertIndex - 2
+			if (!lines[lastEntryIndex].trim().endsWith(",")) {
+				lines[lastEntryIndex] = lines[lastEntryIndex] + ","
+			}
 			lines.add(insertIndex - 1, content)
 		}
 
