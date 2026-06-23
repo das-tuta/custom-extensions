@@ -41,10 +41,10 @@ class AddTranslationAction : AnAction() {
 			try {
 				val basePath = project.basePath ?: return@runWriteCommandAction
 
-				val keysPath = "$basePath/src/common/misc/TranslationKey.ts"
-				val enPath = "$basePath/src/mail-app/translations/en.ts"
-				val dePath = "$basePath/src/mail-app/translations/de.ts"
-				val deSiePath = "$basePath/src/mail-app/translations/de_sie.ts"
+				val keysPath = "$basePath/src/ui/utils/TranslationKey.ts"
+				val enPath = "$basePath/src/ui/translations/en.ts"
+				val dePath = "$basePath/src/ui/translations/de.ts"
+				val deSiePath = "$basePath/src/ui/translations/de_sie.ts"
 
 				val labelContent = "	| \"${data.label}\""
 				insertEntrySpace(File(keysPath), labelContent)
